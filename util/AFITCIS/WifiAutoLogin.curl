@@ -1,0 +1,72 @@
+Running the follow line in the specified order will authenticate your machine onto the public wireless network.
+This can be automated to execute roughly every 8 hours - around the time the client will become disconnected.
+
+curl -k -v --data "buttonClicked=4&err_flag=0&err_msg=&info_flag=0&info_msg=&redirect_url=" https://1.1.1.2/login.html
+
+To automatically logout so you can login again to being another 8 hour session, you can type:
+
+curl -k -v --data "userStatus=1&err_flag=0&err_msg=" https://1.1.1.2/logout.html
+curl -k -v --data "buttonClicked=4&err_flag=0&err_msg=&info_flag=0&info_msg=&redirect_url=" https://1.1.1.2/login.html
+
+
+
+
+
+
+Running the following 4 lines in the specified order will authenticate your machine onto the public wireless network.
+This can be automated to execute roughly every 8 hours - around the time the client will become disconnected. This http traffic was inspected to watch the process and then the commands to reproduce it were generated via curl.
+
+curl -k -v https://1.1.1.2/login.html
+curl -k -v https://1.1.1.2/loginscript.js
+curl -k -v https://1.1.1.2/images/background_web41.jpg
+curl -k -v --data "buttonClicked=4&err_flag=0&err_msg=&info_flag=0&info_msg=&redirect_url=" https://1.1.1.2/login.html
+
+
+
+---------------
+This is debug / garbage output (copied curl commands from chrome)
+
+curl "https://1.1.1.2/login.html" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" -H "Connection: keep-alive" -H "Accept-Encoding: gzip, deflate, sdch" -H "Accept-Language: en-US,en;q=0.8" -H "Upgrade-Insecure-Requests: 1" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36" --compressed
+
+curl "https://1.1.1.2/loginscript.js" -H "Accept: */*" -H "Connection: keep-alive" -H "Accept-Encoding: gzip, deflate, sdch" -H "Referer: https://1.1.1.2/login.html" -H "Accept-Language: en-US,en;q=0.8" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36" --compressed
+
+
+curl "https://1.1.1.2/images/background_web41.jpg" -H "Accept: image/webp,image/*,*/*;q=0.8" -H "Connection: keep-alive" -H "Accept-Encoding: gzip, deflate, sdch" -H "Referer: https://1.1.1.2/login.html" -H "Accept-Language: en-US,en;q=0.8" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36" --compressed
+
+Maybe need the -k in each command above as first argument
+
+
+https://1.1.1.2/loginscript.js
+
+
+
+curl "http://www.afit.edu/wifi/" -H "Accept-Encoding: gzip, deflate, sdch" -H "Accept-Language: en-US,en;q=0.8" -H "Upgrade-Insecure-Requests: 1" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" -H "Cookie: CFID=2874434; CFTOKEN=965cc22f2deb55b9-204AC373-CD1F-0A24-4D9E9C3C1BF30DDA" -H "Connection: keep-alive" --compressed
+
+
+
+
+submitAction (loginscript.js:13)
+onclick (login.html:135)
+
+
+/html/body/html
+
+
+
+Firefox
+
+
+curl -k "https://1.1.1.2/login.html" -H "Host: 1.1.1.2" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" -H "Accept-Language: en-US,en;q=0.5" --compressed -H "Connection: keep-alive"
+
+curl -k "https://1.1.1.2/loginscript.js" -H "Host: 1.1.1.2" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0" -H "Accept: */*" -H "Accept-Language: en-US,en;q=0.5" --compressed -H "Referer: https://1.1.1.2/login.html" -H "Connection: keep-alive"
+
+
+curl -k "http://www.afit.edu/wifi/" -H "Host: www.afit.edu" -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:42.0) Gecko/20100101 Firefox/42.0" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" -H "Accept-Language: en-US,en;q=0.5" --compressed -H "Connection: keep-alive"
+
+
+
+
+
+
+
+
