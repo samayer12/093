@@ -15,7 +15,8 @@ public class GameManager
 	private ServerSocket listener = null;
 	
 	public GameManager()
-	{		
+	{
+		System.out.println("Hello World");
 	}
 	
 	//Returns a client reference to the opponent. This way, we can inspect attributes
