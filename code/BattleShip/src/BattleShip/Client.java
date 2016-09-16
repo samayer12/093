@@ -63,6 +63,10 @@ public class Client
 	//When a fire command is typed, this method parses the coordinates and launches a missle at the enemy
 	boolean processFireCmd( String [] s )
 	{
+		//get position
+		//fire missile
+		//if victim ship !-= null, Say direct strike. Do BDA
+		//else, say missed.
 	}
 	
 	//Send a message to the opponent
