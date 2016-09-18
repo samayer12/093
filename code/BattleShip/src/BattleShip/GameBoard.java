@@ -17,9 +17,12 @@ public class GameBoard
 		this.colCount = colCount;
 		
 		//create the 2D array of cells
-		for(int i = 0; i < rowCount + 2; i++)
+		for(int i = 0; i < rowCount; i++)
 		{
 			cells.add(new ArrayList<Cell>());
+			for(int j = 0; j < colCount; j++){
+				cells.get(i).add(j, null);
+			}
 		}
 	}
 	
@@ -32,14 +35,14 @@ public class GameBoard
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i<this.rowCount+2; i++){
 			for(int j = 0; j < this.colCount+2; j++){
-				if(i == 0 || i == this.rowCount + 1){
+				if(i == 0 || i == this.rowCount + 1){ //Border
 					if(j == 0 || j == this.colCount + 1){ builder.append('+'); }
-					else{ builder.append(j); }
+					else{ builder.append(j); }//Row numbers
 				}
-				else if (j == 0 || j == this.colCount + 1) { builder.append(i); }
-				else{builder.append('x');}
+				else if (j == 0 || j == this.colCount + 1) { builder.append(i); }//Column numbers
+				else{builder.append(cells.get(i-1).get(j-1).draw());}//Game contents
 			}
-			builder.append('\n');
+			builder.append(LINE_END);
 		}
 		return builder.toString();
 	}
@@ -56,7 +59,7 @@ public class GameBoard
 	//The returned ship can then be used to print the name of the ship which
 	//was hit to the player who hit it.
 	//Ensure you handle missiles that may fly off the grid
-	public Ship fireMissle( Position coordinate )
+	public Ship fireMissile(Position coordinate )
 	{
 		
 	}
@@ -82,20 +85,20 @@ public class GameBoard
 		
 		System.out.println( b.draw() );
 		
-		b.fireMissle( new Position(3,5) );
+		b.fireMissile( new Position(3,5) );
 		System.out.println( b.draw() );
-		b.fireMissle( new Position(3,4) );
+		b.fireMissile( new Position(3,4) );
 		System.out.println( b.draw() );
-		b.fireMissle( new Position(3,3) );
-		System.out.println( b.draw() );
-		
-		b.fireMissle( new Position(0,6) );
-		b.fireMissle( new Position(1,6) );
-		b.fireMissle( new Position(2,6) );
-		b.fireMissle( new Position(3,6) );
+		b.fireMissile( new Position(3,3) );
 		System.out.println( b.draw() );
 		
-		b.fireMissle( new Position(6,6) );
+		b.fireMissile( new Position(0,6) );
+		b.fireMissile( new Position(1,6) );
+		b.fireMissile( new Position(2,6) );
+		b.fireMissile( new Position(3,6) );
+		System.out.println( b.draw() );
+		
+		b.fireMissile( new Position(6,6) );
 		System.out.println( b.draw() );
 	}
 
