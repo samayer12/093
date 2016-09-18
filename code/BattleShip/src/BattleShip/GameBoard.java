@@ -17,6 +17,10 @@ public class GameBoard
 		this.colCount = colCount;
 		
 		//create the 2D array of cells
+		for(int i = 0; i < rowCount + 2; i++)
+		{
+			cells.add(new ArrayList<Cell>());
+		}
 	}
 	
 	public String draw()
@@ -25,6 +29,19 @@ public class GameBoard
 		//draw the entire board... I'd use a StringBuilder object to improve speed
 		//remember - you must draw one entire row at a time, and don't forget the
 		//pretty border...
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i<this.rowCount+2; i++){
+			for(int j = 0; j < this.colCount+2; j++){
+				if(i == 0 || i == this.rowCount + 1){
+					if(j == 0 || j == this.colCount + 1){ builder.append('+'); }
+					else{ builder.append(j); }
+				}
+				else if (j == 0 || j == this.colCount + 1) { builder.append(i); }
+				else{builder.append('x');}
+			}
+			builder.append('\n');
+		}
+		return builder.toString();
 	}
 	
 	//add in a ship if it fully 1) fits on the board and 2) doesn't collide w/
