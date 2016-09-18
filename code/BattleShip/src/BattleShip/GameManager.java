@@ -18,13 +18,15 @@ public class GameManager
 	{
 		System.out.println("Hello World");
 	}
-	
+
+	//TODO: Implement public Client getOpponent( Client me)
 	//Returns a client reference to the opponent. This way, we can inspect attributes
 	//and send messages between clients... Each client has a reference to the GameManager
 	//so a client is able to use this method to get a reference to his opponent
-	public Client getOpponent( Client me )
-	{
-	}
+//	public Client getOpponent( Client me )
+//	{
+//
+//	}
 	
 	//In a asychronous nature, begin playing the game. This should only occur after 
 	//the players have been fully initialized.
@@ -46,6 +48,8 @@ public class GameManager
 	//Don't forget about try/finally blocks, if needed
 	boolean waitFor2PlayersToConnect() throws IOException
 	{
+		//TODO: Implement
+		return false;
 	}
 	
 	//let players initialize their name, and gameboard here. This should be done asynchronously

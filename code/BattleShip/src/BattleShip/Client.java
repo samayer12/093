@@ -30,7 +30,7 @@ public class Client
 		this.out.println( "F 2 4" );
 		this.out.println( "Fires a missile at coordinate x=2, y=4." );
 		
-		while( // put Code Here to process in game commands, after each command, print the target board and game board w/ updated state )
+		while( true) //TODO: Put Code Here to process in game commands, after each command, print the target board and game board w/ updated state )
 		{
 			out.println( "------------------------" );
 			out.println( "Target Board:" + this.targets.draw() );
@@ -45,11 +45,15 @@ public class Client
 	//Returns a bool, true iff all of this client's ships are destroyed
 	boolean allMyShipsAreDestroyed()
 	{
+		//TODO: Implement
+		return false; //Placeholder for now.
 	}
 
 	//Returns a bool, true iff all of the opponent's ships are destroyed
 	boolean allEnemyShipsAreDestroyed()
 	{
+		//TODO: Implement
+		return false; //Placeholder for now.
 	}
 
 	//"F 2 4" = Fire command
@@ -57,7 +61,8 @@ public class Client
 	//"D" - Redraw the latest game and target boards
 	boolean processCommand() throws IOException
 	{
-		
+		//TODO: Implement
+		return false; //Placeholder for now.
 	}
 	
 	//When a fire command is typed, this method parses the coordinates and launches a missle at the enemy
@@ -67,11 +72,16 @@ public class Client
 		//fire missile
 		//if victim ship !-= null, Say direct strike. Do BDA
 		//else, say missed.
+		//TODO: Implement
+		return false; //Placeholder for now.
+
 	}
 	
 	//Send a message to the opponent
 	boolean processChatCmd( String s )
 	{
+		//TODO: Implement Chat
+		return false; //Placeholder for now.
 	}
 	
 	GameBoard getGameBoard() { return this.board; }

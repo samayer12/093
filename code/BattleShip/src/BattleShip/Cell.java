@@ -2,31 +2,32 @@ package BattleShip;
 
 public class Cell
 {
-	protected boolean struckByMissle = false;
+	protected boolean struckByMissile = false;
 	protected Ship ship = null;
 	
 	public Cell()
 	{		
 	}
 	
-	public boolean hasBeenStruckByMissile()
-	{
-	}
+	public boolean hasBeenStruckByMissile(){ return struckByMissile; }
 	
 	public void hasBeenStruckByMissile( boolean wasStruck )
-	{	
+	{
+		if(wasStruck == true){
+			struckByMissile = true;
+		}
 	}
 	
 	public char draw()
 	{
 		if( this.ship == null )
 		{
-			if( this.struckByMissle )
+			if( this.struckByMissile)
 				return 'x';
 			return ' ';
 		}
 		//a ship is at this cell
-		return ship.drawShipStatusAtCell( this.struckByMissle );			
+		return ship.drawShipStatusAtCell( this.struckByMissile);
 	}
 	
 	public Ship getShip() { return this.ship; }

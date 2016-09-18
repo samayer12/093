@@ -8,15 +8,11 @@ public class Destroyer extends Ship
     }
     public char drawShipStatusAtCell(boolean isDamaged)
     {
-        if(isDamaged){
-            return 'D';
-        }
-        else if (!isDamaged){
-            return 'd';
-        }
+        if(isDamaged == true){ return 'd'; }
+        else{ return 'D'; }
     }
     public int getLength()
     {
-        return position.size();
+        return 3;
     }
 }
