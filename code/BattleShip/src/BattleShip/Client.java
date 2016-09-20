@@ -25,7 +25,12 @@ public class Client
 		this.out = out;
 		this.man = manager;
 	}
-	
+
+	private void drawBattlespace(){
+		out.println("Target Board:\n" + this.targets.draw());
+		out.println("Your Ships:\n" + this.board.draw());
+	}
+
 	public void playGame() throws IOException
 	{
 		this.out.println( NEWL + NEWL + "   Missiles Away! Game has begun" );
@@ -36,8 +41,7 @@ public class Client
 		while( true) //TODO: Put Code Here to process in game commands, after each command, print the target board and game board w/ updated state )
 		{
 			out.println("------------------------");
-			out.println("Target Board:" + this.targets.draw());
-			out.println("Your Ships: " + this.board.draw());
+			this.drawBattlespace();
 			out.println("\tSalvo complete...\n\n");
 			out.flush();
 			this.processCommand();
@@ -74,7 +78,7 @@ public class Client
 	{
 		boolean cmdSuccess = false;
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Awaiting case-sensitive instruction, " + this.name + ".");
+		out.println("Awaiting case-sensitive instruction, " + this.name + ".");
 		String input = scan.nextLine();
 		String [] inputArr = input.split(" ");
 		switch (inputArr[0]){
@@ -89,7 +93,7 @@ public class Client
 				cmdSuccess = true;
 				break;
 			default:
-				System.out.println("Say again, command unclear.");
+				out.println("Say again, command unclear.");
 				break;
 		}
 		return cmdSuccess;
@@ -117,12 +121,22 @@ public class Client
 	}
 	
 	GameBoard getGameBoard() { return this.board; }
-	
+
+	private HEADING findDirection(String s)
+	{
+		for (HEADING h: HEADING.values())
+		{
+			if(s.equals(h.toString().charAt(0)))
+			{ return h; }
+		}
+		return null;
+	}
+
 	public void initPlayer() throws IOException
 	{
-		Scanner scan = new Scanner(System.in);
 		out.println("Welcome, Commander. Please enter your name...");
-		this.name = scan.nextLine();
+		out.flush();
+		this.name = in.readLine();
 		out.println("Copy that Commander. The situation is as follows:");
 		out.println("\tYou will now place 2 ships. You may choose between either a Cruiser (C) " );
 		out.println("\tand Destroyer (D)...");
@@ -136,10 +150,25 @@ public class Client
 		out.flush();
 
 		//Get ship locations from the player for all 2 ships (or more than 2 if you're using more ships)
-		
-		
+		String inLine = in.readLine();
+		String [] inLineArr = inLine.split(" ");
+		String name = inLine.substring(8);
+		Position newPos = new Position(Integer.parseInt(inLineArr[1]), Integer.parseInt(inLineArr[2]));
+		switch (inLineArr[0]){
+			case "D":
+				Destroyer newDest = new Destroyer(name);
+				board.addShip(newDest, newPos, findDirection(inLineArr[3]));
+				break;
+			case "C":
+				Cruiser newCruiser = new Cruiser(name);
+				board.addShip(newCruiser, newPos, findDirection(inLineArr[3]));
+				break;
+			default:
+				break;
+		}
+
 		//After all game state is input, draw the game board to the client
-		
+		this.drawBattlespace();
 		
 		System.out.println( "Waiting for other player to finish their setup, then war will ensue!" );
 	}
