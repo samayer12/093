@@ -48,6 +48,8 @@ public class GameManager
 	//Don't forget about try/finally blocks, if needed
 	boolean waitFor2PlayersToConnect() throws IOException
 	{
+
+
 		//TODO: Implement
 		return false;
 	}

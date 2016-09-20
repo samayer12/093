@@ -113,10 +113,16 @@ public class GameBoard {
         if ((coordinate.x > -1 && coordinate.x < rowCount) && (coordinate.y > -1 && coordinate.y < colCount)) {
             Cell currentCell = cells.get(coordinate.x).get(coordinate.y);
             currentCell.hasBeenStruckByMissile(true);
+
             if(currentCell.getShip() != null){
+                System.out.println("Direct hit on " + currentCell.getShip().name + "!");
                 return currentCell.getShip();
             }
-            else return null;
+            else
+            {
+                System.out.println("Shot missed.");
+                return null;
+            }
         } else
         {
             System.out.println("SHOT FAILED: Fired outside of battlespace.");
