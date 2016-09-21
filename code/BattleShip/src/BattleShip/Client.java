@@ -3,7 +3,11 @@ package BattleShip;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.Buffer;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Client
 {
@@ -13,8 +17,8 @@ public class Client
 	PrintWriter out = null;
 	BufferedReader in = null;
 	GameManager man = null;
-	GameBoard board = new GameBoard(10,10);
-	GameBoard targets = new GameBoard(10,10);
+	GameBoard board = new GameBoard(10,10); //BLUFOR
+	GameBoard targets = new GameBoard(10,10); //OPFOR
 	
 	Client( BufferedReader in, PrintWriter out, GameManager manager )
 	{
@@ -22,7 +26,12 @@ public class Client
 		this.out = out;
 		this.man = manager;
 	}
-	
+
+	private void drawBattlespace(){
+		out.println("Target Board:\n" + this.targets.drawOpponent());
+		out.println("Your Ships:\n" + this.board.draw());
+	}
+
 	public void playGame() throws IOException
 	{
 		this.out.println( NEWL + NEWL + "   Missiles Away! Game has begun" );
@@ -30,51 +39,78 @@ public class Client
 		this.out.println( "F 2 4" );
 		this.out.println( "Fires a missile at coordinate x=2, y=4." );
 		
-		while( true) //TODO: Put Code Here to process in game commands, after each command, print the target board and game board w/ updated state )
+		while(true) //TODO: Put Code Here to process in game commands, after each command, print the target board and game board w/ updated state )
 		{
-			out.println( "------------------------" );
-			out.println( "Target Board:" + this.targets.draw() );
-			out.println( "Your Ships: " + this.board.draw() );
-			out.println( "   Waiting for Next Command...\n\n" );
+			out.println("------------------------");
+			this.drawBattlespace();
+			out.println("\tSalvo complete...\n\n");
 			out.flush();
-			
-			//Perform test here to see if we have run or lost
+			this.processCommand();
+
+			//Perform test here to see if we have won or lost
+			if(allEnemyShipsAreDestroyed() == true)
+			{ out.println("All targets destroyed!"); }
+			if(allMyShipsAreDestroyed() == true)
+			{ out.println("All our ships have been destroyed!"); }
 		}
 	}
-	
+
+	boolean stillAlive(GameBoard b){
+		for (Ship s : b.myShips
+				) {
+			if (s.isAlive() == true)
+			{ return false; }//since the game is still on
+		}
+		return true; //All ships returned false on isAlive()... game over, man. GAME OVER!
+	}
+
 	//Returns a bool, true iff all of this client's ships are destroyed
 	boolean allMyShipsAreDestroyed()
-	{
-		//TODO: Implement
-		return false; //Placeholder for now.
-	}
+	{ return stillAlive(board); }
 
 	//Returns a bool, true iff all of the opponent's ships are destroyed
 	boolean allEnemyShipsAreDestroyed()
-	{
-		//TODO: Implement
-		return false; //Placeholder for now.
-	}
+	{ return stillAlive(targets); }
 
 	//"F 2 4" = Fire command
 	//"C Hello world, i am a chat message"
 	//"D" - Redraw the latest game and target boards
 	boolean processCommand() throws IOException
 	{
-		//TODO: Implement
-		return false; //Placeholder for now.
+		boolean cmdSuccess = false;
+		out.println("Awaiting case-sensitive instruction, " + this.name + ".");
+		String input = in.readLine();
+		String [] inputArr = input.split(" ");
+		switch (inputArr[0]){
+			case "F":
+				cmdSuccess = processFireCmd(inputArr);
+				break;
+			case "C":
+				cmdSuccess = processChatCmd(input);
+				break;
+			case "D":
+				board.draw();
+				cmdSuccess = true;
+				break;
+			default:
+				out.println("Say again, command unclear.");
+				break;
+		}
+		return cmdSuccess;
 	}
 	
-	//When a fire command is typed, this method parses the coordinates and launches a missle at the enemy
+	//When a fire command is typed, this method parses the coordinates and launches a missile at the enemy
 	boolean processFireCmd( String [] s )
 	{
-		//get position
-		//fire missile
-		//if victim ship !-= null, Say direct strike. Do BDA
-		//else, say missed.
-		//TODO: Implement
-		return false; //Placeholder for now.
-
+		try{
+			Integer x = Integer.parseInt(s[1]);
+			Integer y = Integer.parseInt(s[2]);
+			Position tgt = new Position(x, y);
+			targets.fireMissile(tgt);
+			System.out.println("Coordinated locked, firing at (" + x + "," + y + ")!");
+			return true;
+		}
+		catch (Exception e) {System.out.println("Invalid input."); return false;}
 	}
 	
 	//Send a message to the opponent
@@ -85,38 +121,74 @@ public class Client
 	}
 	
 	GameBoard getGameBoard() { return this.board; }
-	
+
+	private HEADING findDirection(String s)
+	{
+		char in = s.charAt(0);
+		for (HEADING h: HEADING.values())
+		{
+			if(in == (h.toString().charAt(0)))
+			{ return h; }
+		}
+		return null;
+	}
+
 	public void initPlayer() throws IOException
 	{
-		//1.Get player name
-		//2.Print out instructions
-		
-//Here's some nice instructions to show a client		
-//		out.println("   You will now place 2 ships. You may choose between either a Cruiser (C) " );
-//		out.println("   and Destroyer (D)...");
-//		out.println("   Enter Ship info. An example input looks like:");
-//		out.println("\nD 2 4 S USS MyBoat\n");
-//		out.println("   The above line creates a Destroyer with the stern located at x=2 (col)," );
-//		out.println("   y=4 (row) and the front of the ship will point to the SOUTH (valid" );
-//		out.println("   headings are N, E, S, and W.\n\n" );
-//		out.println("   the name of the ship will be \"USS MyBoat\"");
-//		out.println("Enter Ship 1 information:" );
-//		out.flush();
-		
+		out.println("Welcome, Commander. Please enter your name...");
+		out.flush();
+		this.name = in.readLine();
+		out.println("Copy that Commander. The situation is as follows:");
+		out.println("\tYou will now place 2 ships. You may choose between either a Cruiser (C) " );
+		out.println("\tand Destroyer (D)...");
+		out.println("\tEnter Ship info. An example input looks like:");
+		out.println("\n\tD 2 4 S USS MyBoat\n");
+		out.println("\tThe above line creates a Destroyer with the stern located at x=2 (col)," );
+		out.println("\ty=4 (row) and the front of the ship will point to the SOUTH (valid" );
+		out.println("\theadings are N, E, S, and W.\n\n" );
+		out.println("\tthe name of the ship will be \"USS MyBoat\"");
+		out.flush();
+
 		//Get ship locations from the player for all 2 ships (or more than 2 if you're using more ships)
-		
-		
+		for (int i = 0; i < 2; i++)
+		{
+			out.println("Enter ship " + (i + 1) + " of " + 2);
+			out.flush();
+			initShips(in);
+		}
+
 		//After all game state is input, draw the game board to the client
+		this.drawBattlespace();
 		
-		
-		System.out.println( "Waiting for other player to finish their setup, then war will ensue!" );
+		out.println( "Waiting for other player to finish their setup, then war will ensue!" );
 	}
-	
+
+	boolean initShips(BufferedReader in){
+		String inLine = null;
+		try	{ inLine = in.readLine(); }
+		catch (IOException e)
+		{ e.printStackTrace(); }
+		String [] inLineArr = inLine.split(" ");
+		String name = inLine.substring(8);
+		Position newPos = new Position(Integer.parseInt(inLineArr[1]), Integer.parseInt(inLineArr[2]));
+		switch (inLineArr[0]){
+			case "D":
+				Destroyer newDest = new Destroyer(name);
+				board.addShip(newDest, newPos, findDirection(inLineArr[3]));
+				return true;
+			case "C":
+				Cruiser newCruiser = new Cruiser(name);
+				board.addShip(newCruiser, newPos, findDirection(inLineArr[3]));
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	String getName() { return this.name; }
 	
 	public static void main( String [] args )
 	{
-		
-		
+
 	}
 }

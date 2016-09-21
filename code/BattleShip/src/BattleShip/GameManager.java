@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.Buffer;
 import java.util.ArrayList;
 
 public class GameManager
@@ -19,16 +20,19 @@ public class GameManager
 		System.out.println("Hello World");
 	}
 
-	//TODO: Implement public Client getOpponent( Client me)
 	//Returns a client reference to the opponent. This way, we can inspect attributes
 	//and send messages between clients... Each client has a reference to the GameManager
 	//so a client is able to use this method to get a reference to his opponent
-//	public Client getOpponent( Client me )
-//	{
-//
-//	}
+	public Client getOpponent( Client me )
+	{
+		for (Client c : clients)
+		{ if(!clients.equals(me))
+			{return c;}
+		}
+		return null;
+	}
 	
-	//In a asychronous nature, begin playing the game. This should only occur after 
+	//In an asychronous nature, begin playing the game. This should only occur after
 	//the players have been fully initialized.
 	public void playGame()
 	{
@@ -36,7 +40,11 @@ public class GameManager
 		//Asynchronously process missile fire commands from each player		
 		clients.parallelStream().forEach( client -> 
 		{
-			try{ client.playGame(); }
+			try
+			{
+				client.playGame();
+				getOpponentStatus();
+			}
 			catch( IOException e ) { e.printStackTrace(); } 
 		} );
 		
@@ -48,16 +56,50 @@ public class GameManager
 	//Don't forget about try/finally blocks, if needed
 	boolean waitFor2PlayersToConnect() throws IOException
 	{
-		//TODO: Implement
-		return false;
+		//Socket code from: http://stackoverflow.com/questions/10131377/socket-programming-multiple-client-to-one-server
+		Socket sock = null;
+		System.out.println("Server Listening......");
+		try {
+			listener = new ServerSocket(13375); // can also use static final PORT_NUM , when defined
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Server error");
+		}
+
+		while (true) {
+			try {
+				sock = listener.accept();
+				PrintWriter pw = new PrintWriter(sock.getOutputStream());
+				BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+				clients.add(new Client(br, pw, this));
+				System.out.println("Connection Established");
+				if(clients.size() == 2){ return true; }
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Connection Error");
+				return false;
+			}
+		}
 	}
 	
 	//let players initialize their name, and gameboard here. This should be done asynchronously
 	void initPlayers() throws IOException
 	{
+		clients.parallelStream().forEach( client ->
+		{
+			try{
+				client.initPlayer();
+				getOpponentStatus();
+			}
+			catch( IOException e ) { e.printStackTrace(); }
+		} );
 	}
-	
-	
+
+	void getOpponentStatus(){
+		this.clients.get(0).targets = this.clients.get(1).board;
+		this.clients.get(1).targets = this.clients.get(0).board;
+	}
+
 	//Main driver for the program... Hit Crtl-F11 in eclipse to launch the server...
 	//Of course, it has to compile first...
 	public static void main( String [] args ) throws IOException
@@ -65,7 +107,7 @@ public class GameManager
 		GameManager m = new GameManager();
 		
 		System.out.println( "<<<---BattleShip--->>>" );
-		System.out.println( "Waiting for two players to connect to TCP:10000" );
+		System.out.println( "Waiting for two players to connect to TCP:13375" );
 		m.waitFor2PlayersToConnect();
 		System.out.println( "Clients have joined!!!");		
 		m.initPlayers();

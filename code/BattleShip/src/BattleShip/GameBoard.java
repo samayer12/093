@@ -51,6 +51,32 @@ public class GameBoard {
         return builder.toString();
     }
 
+    public String drawOpponent(){
+        //draw the entire board... I'd use a StringBuilder object to improve speed
+        //remember - you must draw one entire row at a time, and don't forget the
+        //pretty border...
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < this.rowCount + 2; i++) {
+            for (int j = 0; j < this.colCount + 2; j++) {
+                if (i == 0 || i == this.rowCount + 1) { //Border
+                    if (j == 0 || j == this.colCount + 1) {
+                        builder.append('+');
+                    } else {
+                        builder.append(j - 1);
+                    }//Row numbers
+                } else if (j == 0 || j == this.colCount + 1) {
+                    builder.append(i - 1);
+                }//Column numbers
+                else {
+                    if(cells.get(i - 1).get(j - 1).hasBeenStruckByMissile() == false) {builder.append(" ");}
+                    else{builder.append(cells.get(i - 1).get(j - 1).draw());}
+                }//Game contents
+            }
+            builder.append(LINE_END);
+        }
+        return builder.toString();
+    }
+
     private void clearCells(int xstart, int ystart, int xoffset, int yoffset, int length){
         Cell currentLoc;
         for (int j = 0; j < length; j++) {
@@ -111,12 +137,18 @@ public class GameBoard {
     //Ensure you handle missiles that may fly off the grid
     public Ship fireMissile(Position coordinate) {
         if ((coordinate.x > -1 && coordinate.x < rowCount) && (coordinate.y > -1 && coordinate.y < colCount)) {
-            Cell currentCell = cells.get(coordinate.x).get(coordinate.y);
+            Cell currentCell = cells.get(coordinate.y).get(coordinate.x);
             currentCell.hasBeenStruckByMissile(true);
+
             if(currentCell.getShip() != null){
+                System.out.println("Direct hit on " + currentCell.getShip().name + "!");
                 return currentCell.getShip();
             }
-            else return null;
+            else
+            {
+                System.out.println("Shot missed.");
+                return null;
+            }
         } else
         {
             System.out.println("SHOT FAILED: Fired outside of battlespace.");

@@ -33,8 +33,7 @@ abstract public class Ship
 	{
 		return this.getLength();
 	}
-	
-	
+
 	public String getName() { return this.name; }
 
 }
