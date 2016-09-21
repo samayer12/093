@@ -3,6 +3,7 @@ package BattleShip;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.Buffer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -27,7 +28,7 @@ public class Client
 	}
 
 	private void drawBattlespace(){
-		out.println("Target Board:\n" + this.targets.draw());
+		out.println("Target Board:\n" + this.targets.drawOpponent());
 		out.println("Your Ships:\n" + this.board.draw());
 	}
 
@@ -38,7 +39,7 @@ public class Client
 		this.out.println( "F 2 4" );
 		this.out.println( "Fires a missile at coordinate x=2, y=4." );
 		
-		while( true) //TODO: Put Code Here to process in game commands, after each command, print the target board and game board w/ updated state )
+		while(true) //TODO: Put Code Here to process in game commands, after each command, print the target board and game board w/ updated state )
 		{
 			out.println("------------------------");
 			this.drawBattlespace();
@@ -77,9 +78,8 @@ public class Client
 	boolean processCommand() throws IOException
 	{
 		boolean cmdSuccess = false;
-		Scanner scan = new Scanner(System.in);
 		out.println("Awaiting case-sensitive instruction, " + this.name + ".");
-		String input = scan.nextLine();
+		String input = in.readLine();
 		String [] inputArr = input.split(" ");
 		switch (inputArr[0]){
 			case "F":
@@ -124,9 +124,10 @@ public class Client
 
 	private HEADING findDirection(String s)
 	{
+		char in = s.charAt(0);
 		for (HEADING h: HEADING.values())
 		{
-			if(s.equals(h.toString().charAt(0)))
+			if(in == (h.toString().charAt(0)))
 			{ return h; }
 		}
 		return null;
@@ -146,11 +147,27 @@ public class Client
 		out.println("\ty=4 (row) and the front of the ship will point to the SOUTH (valid" );
 		out.println("\theadings are N, E, S, and W.\n\n" );
 		out.println("\tthe name of the ship will be \"USS MyBoat\"");
-		out.println("\tEnter Ship 1 information:" );
 		out.flush();
 
 		//Get ship locations from the player for all 2 ships (or more than 2 if you're using more ships)
-		String inLine = in.readLine();
+		for (int i = 0; i < 2; i++)
+		{
+			out.println("Enter ship " + (i + 1) + " of " + 2);
+			out.flush();
+			initShips(in);
+		}
+
+		//After all game state is input, draw the game board to the client
+		this.drawBattlespace();
+		
+		out.println( "Waiting for other player to finish their setup, then war will ensue!" );
+	}
+
+	boolean initShips(BufferedReader in){
+		String inLine = null;
+		try	{ inLine = in.readLine(); }
+		catch (IOException e)
+		{ e.printStackTrace(); }
 		String [] inLineArr = inLine.split(" ");
 		String name = inLine.substring(8);
 		Position newPos = new Position(Integer.parseInt(inLineArr[1]), Integer.parseInt(inLineArr[2]));
@@ -158,21 +175,16 @@ public class Client
 			case "D":
 				Destroyer newDest = new Destroyer(name);
 				board.addShip(newDest, newPos, findDirection(inLineArr[3]));
-				break;
+				return true;
 			case "C":
 				Cruiser newCruiser = new Cruiser(name);
 				board.addShip(newCruiser, newPos, findDirection(inLineArr[3]));
-				break;
+				return true;
 			default:
-				break;
+				return false;
 		}
-
-		//After all game state is input, draw the game board to the client
-		this.drawBattlespace();
-		
-		System.out.println( "Waiting for other player to finish their setup, then war will ensue!" );
 	}
-	
+
 	String getName() { return this.name; }
 	
 	public static void main( String [] args )

@@ -40,7 +40,11 @@ public class GameManager
 		//Asynchronously process missile fire commands from each player		
 		clients.parallelStream().forEach( client -> 
 		{
-			try{ client.playGame(); }
+			try
+			{
+				client.playGame();
+				getOpponentStatus();
+			}
 			catch( IOException e ) { e.printStackTrace(); } 
 		} );
 		
@@ -83,11 +87,19 @@ public class GameManager
 	{
 		clients.parallelStream().forEach( client ->
 		{
-			try{ client.initPlayer();; }
+			try{
+				client.initPlayer();
+				getOpponentStatus();
+			}
 			catch( IOException e ) { e.printStackTrace(); }
 		} );
 	}
-	
+
+	void getOpponentStatus(){
+		this.clients.get(0).targets = this.clients.get(1).board;
+		this.clients.get(1).targets = this.clients.get(0).board;
+	}
+
 	//Main driver for the program... Hit Crtl-F11 in eclipse to launch the server...
 	//Of course, it has to compile first...
 	public static void main( String [] args ) throws IOException
