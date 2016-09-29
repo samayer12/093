@@ -23,6 +23,7 @@ global globalViewMode
 globalMatchedFilesCount = 0
 globalViewMode = 1  # 1 means only view what would be modifed, 0 means perform the regex modification
 
+print('hello')
 
 def refactorTextWithinFile(oldFileName, regExp, re2):
    #open file
