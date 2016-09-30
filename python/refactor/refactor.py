@@ -23,15 +23,26 @@ global globalViewMode
 globalMatchedFilesCount = 0
 globalViewMode = 1  # 1 means only view what would be modifed, 0 means perform the regex modification
 
-print('hello')
+def refactorTextWithinFile(oldFile, Find, Replace):
+    #open file
+    #read file into string
+    #apply regex substitution to input string
+    #if output string has changed, the regex found a match and was applied so write it to file
 
-def refactorTextWithinFile(oldFileName, regExp, re2):
-   #open file
-   #read file into string
-   #apply regex substitution to input string
-   #if output string has changed, the regex found a match and was applied so write it to file
+    import fileinput
 
-if (len(sys.argv) != 4):
+    for line in fileinput.input(oldFile, inplace=True, backup='.bak'):
+        line = re.sub(sys.argv[2], sys.argv[3], line.rstrip())
+        print(line)
+
+def showTargetedFiles(flist):
+    # find all files we want to search. In this example all files in './test/*.txt'
+    print("Files affected:")
+    for f in flist:
+        print(f)
+
+# Display Help Text
+if len(sys.argv) != 4:
     print("")
     print("Usage (from usr/modules/): refactor (v|r) RegExToFind RegExToReplace")
     print("   v: means view-only - no files will be modified. Only those")
@@ -43,7 +54,6 @@ if (len(sys.argv) != 4):
     print(
         "python refactor.py \"([a-z]*)_([a-z]*)_([a-z]*)_([a-z]*)_([a-z]*)_([a-z]*)_([a-z]*)\" \"\\5_\\7_\\2_\\6_\\3_\\4_\\1\"")
     print("python refactor.py foo bar")
-    print("python refactor.py foo bar")
     print("python refactor.py \"---*\" \"-\"")
     #       python renameFiles.py v "GLViewNyklDTED\.cpp" "FunDTED.cpp" (No need to escape quotes in doc)
     print("python renameFiles.py v \"GLViewNyklDTED\.cpp\" \"FunDTED.cpp\"")
@@ -52,18 +62,32 @@ if (len(sys.argv) != 4):
     quit()
 
 # fileExt = sys.argv[1]
-if (sys.argv[1] == 'r' or sys.argv[1] == 'R'):
+
+#Read in regular expressions
+print("***REGEX UTILITY***")
+print("Detected the following Regexes:")
+#Compile regex to ensure validity
+regexFind = re.compile(sys.argv[2])
+regexRep = re.compile(sys.argv[3])
+print(sys.argv[2])
+print(sys.argv[3])
+
+fileList = []
+rootdir = ".\\test"
+for root, subFolders, files in os.walk(rootdir):
+    for file in files:
+        fileList.append(os.path.join(root, file))
+
+#and output if we are in replace or view mode
+if sys.argv[1] == 'r' or sys.argv[1] == 'R':
     #we are going to actually REPLACE!!!
+    print("Current mode: REPLACE")
+    # for each file found, call refactorTextWithinFile which applies regex to it
+    showTargetedFiles(fileList)
+    print("Refactoring files...")
+    for file in fileList:
+        refactorTextWithinFile(file, regexFind, regexRep)
 else:
     #we are just going to view what would be replaced if 'R' was passed in.
-    
-#Read in regular expressions    
-#and output if we are in replace or view mode
-
-#Compile regex to ensure validity
-
-
-#find all files we want to search. In this example all files in './test/*.txt'
-
-
-#for each file found, call refactorTextWithinFile which applies regex to it
+    print("Current mode: VIEW\n")
+    showTargetedFiles(fileList)
