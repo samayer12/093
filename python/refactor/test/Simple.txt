@@ -1,4 +1,4 @@
-mpa_songname_bandname
-mpa_iceicebaby_vanillaice
-mpa_liquidfire_gojira
-mpa_entersandman_metallica
+songname_bandname_mpa
+iceicebaby_vanillaice_mpa
+liquidfire_gojira_mpa
+entersandman_metallica_mpa

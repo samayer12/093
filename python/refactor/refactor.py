@@ -68,7 +68,7 @@ print("***REGEX UTILITY***")
 print("Detected the following Regexes:")
 #Compile regex to ensure validity
 regexFind = re.compile(sys.argv[2])
-regexRep = re.compile(sys.argv[3])
+regexRep = re.compile(sys.argv[2])
 print(sys.argv[2])
 print(sys.argv[3])
 
