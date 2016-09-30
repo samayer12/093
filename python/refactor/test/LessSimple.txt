@@ -1,0 +1,9 @@
+mp3_Songname_BaNdNaMe
+mp3_IceIcebaby_VanillaIce
+mp3_LiquidFire_Gojira
+mp3_EnterSandman_Metallica
+
+I don't need to be touched
+
+Do i fit the regex? Hope not!
+mpa Notamatch Forcertain
